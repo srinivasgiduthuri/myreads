@@ -1,11 +1,17 @@
 import { Link } from "react-router-dom";
 import Book from "./Book";
 
-const SearchBooks = ({ onSearch, booksByQuery }) => {
+const SearchBooks = ({
+  books,
+  onSearch,
+  booksByQuery,
+  onShelfChange,
+  onSearchClose,
+}) => {
   return (
     <div className="search-books">
       <div className="search-books-bar">
-        <Link to="/" className="close-search">
+        <Link to="/" className="close-search" onClick={() => onSearchClose([])}>
           Close
         </Link>
         <div className="search-books-input-wrapper">
@@ -21,7 +27,11 @@ const SearchBooks = ({ onSearch, booksByQuery }) => {
           {Array.isArray(booksByQuery) &&
             booksByQuery.length > 0 &&
             booksByQuery.map((book) => {
-              return <Book key={book.id} book={book} />;
+              const bookById = books.find((b) => b.id === book.id);
+              book.shelf = bookById && bookById.shelf;
+              return (
+                <Book key={book.id} book={book} onShelfChange={onShelfChange} />
+              );
             })}
         </ol>
       </div>

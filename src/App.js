@@ -14,6 +14,7 @@ const App = () => {
 
   const [books, setBooks] = useState([]);
   const [booksByQuery, setBooksByQuery] = useState([]);
+  const [booksByShelves, setBooksByShelves] = useState({});
 
   useEffect(() => {
     const getBooks = async () => {
@@ -21,7 +22,7 @@ const App = () => {
       setBooks(res);
     };
     getBooks();
-  }, []);
+  }, [booksByShelves]);
 
   const handleSearch = (event) => {
     const searchBooksByQuery = async () => {
@@ -31,18 +32,38 @@ const App = () => {
     searchBooksByQuery();
   };
 
+  const handleShelfChange = (book, shelf) => {
+    const updateBook = async () => {
+      const res = await BooksAPI.update(book, shelf);
+      setBooksByShelves(res);
+    };
+    updateBook();
+  };
+
   return (
     <div className="app">
       <Routes>
         <Route
           exact
           path="/"
-          element={<ListBooks books={books} shelves={shelves} />}
+          element={
+            <ListBooks
+              books={books}
+              shelves={shelves}
+              onShelfChange={handleShelfChange}
+            />
+          }
         />
         <Route
           path="/search"
           element={
-            <SearchBooks onSearch={handleSearch} booksByQuery={booksByQuery} />
+            <SearchBooks
+              books={books}
+              onSearch={handleSearch}
+              booksByQuery={booksByQuery}
+              onSearchClose={setBooksByQuery}
+              onShelfChange={handleShelfChange}
+            />
           }
         />
       </Routes>
