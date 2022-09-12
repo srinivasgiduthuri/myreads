@@ -27,7 +27,7 @@ const App = () => {
   const handleSearch = (event) => {
     const searchBooksByQuery = async () => {
       const res = await BooksAPI.search(event.target.value, 10);
-      setBooksByQuery(res);
+      books["error"] ? setBooksByQuery([]) : setBooksByQuery(res);
     };
     searchBooksByQuery();
   };
